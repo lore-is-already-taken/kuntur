@@ -10,7 +10,7 @@ import (
 	"testing/fstest"
 	"time"
 
-	"github.com/lore/kuntur/internal/server"
+	"github.com/lore-is-already-taken/kuntur/internal/server"
 )
 
 // indexTemplate is a minimal Go template used across handler tests.

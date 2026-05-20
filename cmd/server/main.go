@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lore/kuntur/internal/server"
-	"github.com/lore/kuntur/web"
+	"github.com/lore-is-already-taken/kuntur/internal/server"
+	"github.com/lore-is-already-taken/kuntur/web"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/lore/kuntur/web"
+	"github.com/lore-is-already-taken/kuntur/web"
 )
 
 func TestTemplatesFS_containsIndex(t *testing.T) {
