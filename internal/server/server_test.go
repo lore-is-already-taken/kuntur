@@ -14,10 +14,14 @@ import (
 )
 
 // indexTemplate is a minimal Go template used across handler tests.
+// Markers match the real web/templates/index.html so assertions stay meaningful.
 const indexTemplate = `<!doctype html>
-<html>
-<head><title>kuntur</title></head>
-<body><h1>Hello kuntur</h1></body>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>kuntur</title></head>
+<body>
+<div id="app"><button id="counter" type="button"></button></div>
+<p class="read-the-docs">Click on the Vite and TypeScript logos to learn more</p>
+</body>
 </html>
 `
 
@@ -54,11 +58,27 @@ func TestHandlers(t *testing.T) {
 		wantContentType  string
 	}{
 		{
-			name:             "index_returns_html",
+			name:             "index_returns_html_with_title",
 			method:           http.MethodGet,
 			path:             "/",
 			wantStatus:       http.StatusOK,
-			wantBodyContains: "Hello kuntur",
+			wantBodyContains: "<title>kuntur</title>",
+			wantContentType:  "text/html; charset=utf-8",
+		},
+		{
+			name:             "index_contains_counter_element",
+			method:           http.MethodGet,
+			path:             "/",
+			wantStatus:       http.StatusOK,
+			wantBodyContains: `id="counter"`,
+			wantContentType:  "text/html; charset=utf-8",
+		},
+		{
+			name:             "index_contains_read_the_docs",
+			method:           http.MethodGet,
+			path:             "/",
+			wantStatus:       http.StatusOK,
+			wantBodyContains: "read-the-docs",
 			wantContentType:  "text/html; charset=utf-8",
 		},
 		{
