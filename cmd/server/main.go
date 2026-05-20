@@ -23,18 +23,22 @@ func main() {
 	}
 	addr := ":" + port
 
-	// REQ-006: configurable shutdown timeout.
-	shutdownTimeout := 5 * time.Second
-	if v := os.Getenv("SHUTDOWN_TIMEOUT"); v != "" {
-		if d, err := time.ParseDuration(v); err == nil {
-			shutdownTimeout = d
-		}
-	}
-
 	// NFR structured logging via slog JSON handler.
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slog.LevelInfo,
 	}))
+
+	// REQ-006: configurable shutdown timeout. Invalid input falls back to the
+	// default but is logged so misconfiguration is visible at startup.
+	shutdownTimeout := 5 * time.Second
+	if v := os.Getenv("SHUTDOWN_TIMEOUT"); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			shutdownTimeout = d
+		} else {
+			logger.Warn("invalid SHUTDOWN_TIMEOUT, using default",
+				"value", v, "err", err, "default", shutdownTimeout)
+		}
+	}
 
 	// NFR-005 preventive: register .svg MIME type before serving.
 	if err := mime.AddExtensionType(".svg", "image/svg+xml"); err != nil {
