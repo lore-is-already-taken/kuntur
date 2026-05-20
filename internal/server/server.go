@@ -12,11 +12,15 @@ import (
 
 // Config holds the dependencies and settings for the HTTP server.
 type Config struct {
-	Addr      string       // e.g. ":8080"
-	Logger    *slog.Logger // if nil, slog.Default() is used
-	Templates fs.FS        // expected to contain "index.html" at the root of the sub-FS
-	Static    fs.FS        // expected to be the result of fs.Sub(web.StaticFS, "static")
+	Addr            string        // e.g. ":8080"
+	Logger          *slog.Logger  // if nil, slog.Default() is used
+	Templates       fs.FS         // expected to contain "index.html" at the root of the sub-FS
+	Static          fs.FS         // expected to be the result of fs.Sub(web.StaticFS, "static")
+	ShutdownTimeout time.Duration // graceful-shutdown deadline; if zero, defaults to 5s
 }
+
+// defaultShutdownTimeout is used when Config.ShutdownTimeout is zero.
+const defaultShutdownTimeout = 5 * time.Second
 
 // Server is the HTTP server for kuntur.
 type Server struct {
@@ -36,6 +40,9 @@ func New(cfg Config) (*Server, error) {
 	}
 	if cfg.Logger == nil {
 		cfg.Logger = slog.Default()
+	}
+	if cfg.ShutdownTimeout <= 0 {
+		cfg.ShutdownTimeout = defaultShutdownTimeout
 	}
 
 	t, err := template.ParseFS(cfg.Templates, "*.html")
@@ -110,7 +117,7 @@ func (s *Server) loggingMiddleware(next http.Handler) http.Handler {
 
 // Start runs the HTTP server until ctx is cancelled or ListenAndServe returns
 // a non-ErrServerClosed error. On ctx cancellation it initiates a graceful
-// shutdown with a 5-second timeout.
+// shutdown bounded by Config.ShutdownTimeout.
 func (s *Server) Start(ctx context.Context) error {
 	httpSrv := &http.Server{
 		Addr:    s.cfg.Addr,
@@ -124,7 +131,7 @@ func (s *Server) Start(ctx context.Context) error {
 
 	select {
 	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), s.cfg.ShutdownTimeout)
 		defer cancel()
 		return httpSrv.Shutdown(shutdownCtx)
 	case err := <-errCh:

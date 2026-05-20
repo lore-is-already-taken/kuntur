@@ -30,7 +30,6 @@ func main() {
 			shutdownTimeout = d
 		}
 	}
-	_ = shutdownTimeout // used implicitly via server.Start (hardcoded 5s; env read for future use)
 
 	// NFR structured logging via slog JSON handler.
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
@@ -57,10 +56,11 @@ func main() {
 	}
 
 	cfg := server.Config{
-		Addr:      addr,
-		Logger:    logger,
-		Templates: templatesSub,
-		Static:    staticSub,
+		Addr:            addr,
+		Logger:          logger,
+		Templates:       templatesSub,
+		Static:          staticSub,
+		ShutdownTimeout: shutdownTimeout,
 	}
 
 	s, err := server.New(cfg)

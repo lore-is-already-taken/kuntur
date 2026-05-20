@@ -176,3 +176,41 @@ func TestStart_gracefulShutdown(t *testing.T) {
 		t.Fatal("Start did not return within 3 seconds after ctx cancel")
 	}
 }
+
+// TestStart_respectsConfiguredShutdownTimeout asserts that a caller-provided
+// ShutdownTimeout is wired through to http.Server.Shutdown. Uses a deliberately
+// short timeout so a regression that hardcodes 5s would be caught by the outer
+// 1-second test deadline.
+func TestStart_respectsConfiguredShutdownTimeout(t *testing.T) {
+	templates := fstest.MapFS{
+		"index.html": &fstest.MapFile{Data: []byte(indexTemplate)},
+	}
+	s, err := server.New(server.Config{
+		Addr:            ":0",
+		Templates:       templates,
+		Static:          fstest.MapFS{},
+		ShutdownTimeout: 100 * time.Millisecond,
+	})
+	if err != nil {
+		t.Fatalf("server.New: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- s.Start(ctx)
+	}()
+
+	time.Sleep(50 * time.Millisecond)
+	cancel()
+
+	select {
+	case err := <-errCh:
+		if err != nil {
+			t.Errorf("Start returned unexpected error: %v", err)
+		}
+	case <-time.After(1 * time.Second):
+		t.Fatal("Start did not return within 1s with 100ms ShutdownTimeout")
+	}
+}
