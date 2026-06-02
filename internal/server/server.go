@@ -45,7 +45,7 @@ func homeHandler(tmpl *template.Template) http.HandlerFunc {
 		data := PageData{
 			Title:   "Kuntur",
 			Group:   "Kuntur",
-			Tagline: "Andean music, alive.",
+			Tagline: "Aguanten las cabras, somos poderosas",
 		}
 		// Set Content-Type before writing the body so http.Error below can
 		// still emit a proper text/plain error if the template blows up.
