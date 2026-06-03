@@ -15,3 +15,6 @@
 
 # local agent tooling (skill registry, transcripts)
 .atl/
+
+# air live reload build artifacts
+/tmp/
