@@ -20,11 +20,46 @@ var templatesFS embed.FS
 //go:embed all:static
 var staticFS embed.FS
 
-// Templates returns the parsed HTML templates, ready to be executed.
+// Views returns a parsed template per view file. Each view is parsed into a
+// fresh *template.Template seeded with a clone of the layout, so the block
+// names that each view defines (e.g. "title", "content") live in their own
+// namespace and never collide across views.
+//
+// Files in templates/ named layout.html are skipped — they are the shared
+// shell consumed via {{ template "layout" . }} from each view.
+//
 // The package panics on parse errors because they are programming mistakes
 // that should be caught the first time the binary runs.
-func Templates() *template.Template {
-	return template.Must(template.ParseFS(templatesFS, "templates/*.html"))
+func Views() map[string]*template.Template {
+	layout := template.Must(template.ParseFS(templatesFS, "templates/layout.html"))
+
+	entries, err := fs.ReadDir(templatesFS, "templates")
+	if err != nil {
+		panic("web: cannot read templates dir: " + err.Error())
+	}
+
+	views := make(map[string]*template.Template, len(entries))
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if name == "layout.html" {
+			continue
+		}
+
+		// Clone the parsed layout into a fresh set, then layer the view on
+		// top. Clone() is cheap: it copies the parse tree by reference.
+		set, err := layout.Clone()
+		if err != nil {
+			panic("web: cannot clone layout: " + err.Error())
+		}
+		if _, err := set.ParseFS(templatesFS, "templates/"+name); err != nil {
+			panic("web: cannot parse view " + name + ": " + err.Error())
+		}
+		views[name] = set
+	}
+	return views
 }
 
 // Static returns an fs.FS rooted at the static directory, suitable for
@@ -37,3 +72,4 @@ func Static() fs.FS {
 	}
 	return sub
 }
+

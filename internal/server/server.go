@@ -24,10 +24,12 @@ func NewRouter() http.Handler {
 	// prefix be removed before the file server looks up the path.
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServerFS(web.Static())))
 
+	views := web.Views()
+
 	// "GET /{$}" matches exactly "/" and nothing else — prevents accidental
 	// shadowing of the static handler by paths like /foo.
-	mux.HandleFunc("GET /{$}", router.HomeHandler(web.Templates()))
-	mux.HandleFunc("GET /hero", router.HeroHandler(web.Templates()))
+	mux.HandleFunc("GET /{$}", router.HomeHandler(views["index.html"]))
+	mux.HandleFunc("GET /hero", router.HeroHandler(views["hero.html"]))
 
 	return logMiddleware(mux)
 }
