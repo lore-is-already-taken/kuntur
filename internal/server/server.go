@@ -27,6 +27,7 @@ func NewRouter() http.Handler {
 	// "GET /{$}" matches exactly "/" and nothing else — prevents accidental
 	// shadowing of the static handler by paths like /foo.
 	mux.HandleFunc("GET /{$}", router.HomeHandler(web.Templates()))
+	mux.HandleFunc("GET /hero", router.HeroHandler(web.Templates()))
 
 	return logMiddleware(mux)
 }

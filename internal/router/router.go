@@ -24,3 +24,9 @@ func HomeHandler(tmpl *template.Template) http.HandlerFunc {
 		render(w, r, tmpl, "index.html", data)
 	}
 }
+
+func HeroHandler(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		render(w, r, tmpl, "hero.html", nil)
+	}
+}
