@@ -1,0 +1,32 @@
+{{ define "layout" }}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ block "title" . }}Kuntur{{ end }}</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    {{ block "head" . }}{{ end }}
+  </head>
+  <body>
+    {{ template "nav" . }}
+    <main class="page-main">{{ block "content" . }}{{ end }}</main>
+    {{ template "footer" . }}
+  </body>
+</html>
+{{ end }} {{ define "nav" }}
+<header class="site-header">
+  <nav class="site-nav">
+    <a class="site-nav__brand" href="/">Kuntur</a>
+    <div class="site-nav__links">
+      <a class="site-nav__link" href="/">Inicio</a>
+      <a class="site-nav__link" href="/hero">Presentaciones</a>
+    </div>
+  </nav>
+</header>
+{{ end }} {{ define "footer" }}
+<footer class="site-footer">
+  <p class="site-footer__copy">© 2026 Kuntur</p>
+</footer>
+{{ end }}
+

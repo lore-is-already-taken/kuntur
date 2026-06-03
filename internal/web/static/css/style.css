@@ -3,6 +3,7 @@
   --fg: #1a1a1a;
   --accent: #8a2a2a;
   --muted: #6b6b6b;
+  --border: rgba(26, 26, 26, 0.1);
 
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -29,16 +30,76 @@ body {
   color: var(--fg);
   font-family: var(--font-sans);
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── Navigation ──────────────────────────────────────────── */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-nav {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-nav__brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-nav__links {
+  display: flex;
+  gap: 2rem;
+}
+
+.site-nav__link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.site-nav__link:hover {
+  color: var(--fg);
+}
+
+/* ─── Page layout ─────────────────────────────────────────── */
+
+.page-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Hero (home page) ────────────────────────────────────── */
+
 .hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  max-width: 40rem;
+  padding: 6rem 2rem;
 }
 
 .hero__eyebrow {
@@ -61,13 +122,92 @@ body {
 .hero__tagline {
   font-size: 1.25rem;
   color: var(--muted);
-  margin: 0.5rem 0 3rem;
+  margin: 0.75rem 0 2.5rem;
 }
 
-.hero__hello {
+.hero__cta {
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--accent);
+  text-decoration: none;
+  padding: 0.75rem 2rem;
+  border-radius: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.hero__cta:hover {
+  opacity: 0.85;
+}
+
+/* ─── Shows page ──────────────────────────────────────────── */
+
+.shows {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  width: 100%;
+}
+
+.shows__title {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  margin: 0 0 2.5rem;
+}
+
+.show-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.show-card {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.show-card__date {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.show-card__venue {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.show-card__city {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0.2rem 0 0;
+}
+
+/* ─── Footer ──────────────────────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+.site-footer__copy {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
   margin: 0;

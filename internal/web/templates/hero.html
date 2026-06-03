@@ -1,13 +1,25 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kuntur Kantu</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
-  </head>
-  <body>
-    <h1>Hola amigo como estas</h1>
-    <p>lorem500</p>
-  </body>
-</html>
+{{ define "title" }}Presentaciones — Kuntur{{ end }}
+
+{{ define "content" }}
+<section class="shows">
+  <h1 class="shows__title">Presentaciones</h1>
+  <ul class="show-list">
+    <li class="show-card">
+      <time class="show-card__date">Jun 2026</time>
+      <div>
+        <p class="show-card__venue">Espacio Cultural Centro</p>
+        <p class="show-card__city">Santiago, Chile</p>
+      </div>
+    </li>
+    <li class="show-card">
+      <time class="show-card__date">Ago 2026</time>
+      <div>
+        <p class="show-card__venue">Teatro Municipal</p>
+        <p class="show-card__city">Valparaíso, Chile</p>
+      </div>
+    </li>
+  </ul>
+</section>
+{{ end }}
+
+{{ template "layout" . }}

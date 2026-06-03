@@ -30,3 +30,4 @@ func HeroHandler(tmpl *template.Template) http.HandlerFunc {
 		render(w, r, tmpl, "hero.html", nil)
 	}
 }
+
