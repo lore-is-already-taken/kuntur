@@ -1,0 +1,51 @@
+{{ define "title" }}Contacto — Kuntur{{ end }} {{ define "content" }}
+<section class="contact">
+  <h1 class="contact__title">Escribinos</h1>
+  <p class="contact__subtitle">
+    También podés escribirnos directo a
+    <a class="contact__email" href="mailto:hola@kunturkantu.cl"
+      >hola@kunturkantu.cl</a
+    >
+  </p>
+
+  <form class="contact-form" action="/contacto" method="POST">
+    <div class="contact-form__field">
+      <label class="contact-form__label" for="name">Nombre</label>
+      <input
+        class="contact-form__input"
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Tu nombre"
+        required
+      />
+    </div>
+
+    <div class="contact-form__field">
+      <label class="contact-form__label" for="email">Correo</label>
+      <input
+        class="contact-form__input"
+        type="email"
+        id="email"
+        name="email"
+        placeholder="tu@correo.com"
+        required
+      />
+    </div>
+
+    <div class="contact-form__field">
+      <label class="contact-form__label" for="message">Mensaje</label>
+      <textarea
+        class="contact-form__textarea"
+        id="message"
+        name="message"
+        rows="5"
+        placeholder="¿En qué podemos ayudarte?"
+        required
+      ></textarea>
+    </div>
+
+    <button class="contact-form__submit" type="submit">Enviar mensaje</button>
+  </form>
+</section>
+{{ end }} {{ template "layout" . }}
