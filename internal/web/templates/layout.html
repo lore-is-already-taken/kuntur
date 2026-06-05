@@ -20,13 +20,22 @@
     <a class="site-nav__brand" href="/">Kuntur</a>
     <div class="site-nav__links">
       <a class="site-nav__link" href="/">Inicio</a>
-      <a class="site-nav__link" href="/hero">Presentaciones</a>
+      <a class="site-nav__link" href="/presentaciones">Presentaciones</a>
+      <a class="site-nav__link" href="/biografia">Biografia</a>
+      <a class="site-nav__link" href="/registro">Registro</a>
+      <a class="site-nav__link" href="/contacto">contacto</a>
     </div>
   </nav>
 </header>
 {{ end }} {{ define "footer" }}
 <footer class="site-footer">
+  <div class="site-footer__contact">
+    <p class="site-footer__contact-label">¿Querés contactarnos?</p>
+    <a class="site-footer__contact-email" href="mailto:hola@kunturkantu.cl"
+      >hola@kunturkantu.cl</a
+    >
+    <a class="site-footer__contact-link" href="/contacto">Escribinos →</a>
+  </div>
   <p class="site-footer__copy">© 2026 Kuntur</p>
 </footer>
 {{ end }}
-

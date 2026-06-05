@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-func render(w http.ResponseWriter, r *http.Request, tmpl *template.Template, name string, data any) {
+func render(w http.ResponseWriter, r *http.Request, tmpl *template.Template, data any) {
 	var buf bytes.Buffer
-	if err := tmpl.ExecuteTemplate(&buf, name, data); err != nil {
-		slog.Error("template execution failed", "err", err, "template", name, "path", r.URL.Path)
+	if err := tmpl.ExecuteTemplate(&buf, "layout", data); err != nil {
+		slog.Error("template execution failed", "err", err, "path", r.URL.Path)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}

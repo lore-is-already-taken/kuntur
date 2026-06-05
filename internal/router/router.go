@@ -21,13 +21,30 @@ func HomeHandler(tmpl *template.Template) http.HandlerFunc {
 			Group:   "Kuntur",
 			Tagline: "Aguanten las cabras, somos poderosas",
 		}
-		render(w, r, tmpl, "index.html", data)
+		render(w, r, tmpl, data)
 	}
 }
 
 func HeroHandler(tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		render(w, r, tmpl, "hero.html", nil)
+		render(w, r, tmpl, nil)
 	}
 }
 
+func RegistroHandler(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		render(w, r, tmpl, nil)
+	}
+}
+
+func BioHandler(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		render(w, r, tmpl, nil)
+	}
+}
+
+func ContactHandler(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		render(w, r, tmpl, nil)
+	}
+}

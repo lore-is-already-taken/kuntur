@@ -72,4 +72,3 @@ func Static() fs.FS {
 	}
 	return sub
 }
-

@@ -29,7 +29,10 @@ func NewRouter() http.Handler {
 	// "GET /{$}" matches exactly "/" and nothing else — prevents accidental
 	// shadowing of the static handler by paths like /foo.
 	mux.HandleFunc("GET /{$}", router.HomeHandler(views["index.html"]))
-	mux.HandleFunc("GET /hero", router.HeroHandler(views["hero.html"]))
+	mux.HandleFunc("GET /presentaciones", router.HeroHandler(views["presentaciones.html"]))
+	mux.HandleFunc("GET /biografia", router.BioHandler(views["biografia.html"]))
+	mux.HandleFunc("GET /registro", router.RegistroHandler(views["registro.html"]))
+	mux.HandleFunc("GET /contacto", router.ContactHandler(views["contacto.html"]))
 
 	return logMiddleware(mux)
 }
