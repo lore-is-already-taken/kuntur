@@ -8,6 +8,12 @@
     >
   </p>
 
+  {{ if .Success }}
+  <p class="contact__success">
+    ¡Mensaje enviado! Nos pondremos en contacto pronto.
+  </p>
+  {{ end }}
+
   <form class="contact-form" action="/contacto" method="POST">
     <div class="contact-form__field">
       <label class="contact-form__label" for="name">Nombre</label>

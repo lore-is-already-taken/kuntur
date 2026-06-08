@@ -7,11 +7,10 @@
 package server
 
 import (
-	"log/slog"
-	"net/http"
-
 	"kuntur/internal/router"
 	"kuntur/internal/web"
+	"log/slog"
+	"net/http"
 )
 
 // NewRouter returns a fully configured http.Handler.
@@ -34,6 +33,7 @@ func NewRouter() http.Handler {
 	mux.HandleFunc("GET /registro", router.RegistroHandler(views["registro.html"]))
 	mux.HandleFunc("GET /contacto", router.ContactHandler(views["contacto.html"]))
 
+	mux.HandleFunc("POST /contacto", router.SaveContacto())
 	return logMiddleware(mux)
 }
 
