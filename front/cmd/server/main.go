@@ -15,7 +15,7 @@ import (
 	"syscall"
 	"time"
 
-	"kuntur/internal/server"
+	"kuntur/app/server"
 )
 
 const (

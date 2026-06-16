@@ -1,0 +1,19 @@
+services:
+  mongo:
+    build: .
+    container_name: kuntur_mongo
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  mongo_data:

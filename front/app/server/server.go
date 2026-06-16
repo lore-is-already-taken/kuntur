@@ -2,15 +2,27 @@
 //
 // The router is built with the standard library's http.ServeMux, which since
 // Go 1.22 supports method+pattern matching (e.g. "GET /{$}"). Static assets
-// are served from an embedded filesystem owned by internal/web, so this
-// package does not touch the real filesystem at runtime.
+// are served from an embedded filesystem owned by app/web, so this package
+// does not touch the real filesystem at runtime.
 package server
 
 import (
-	"kuntur/internal/router"
-	"kuntur/internal/web"
 	"log/slog"
 	"net/http"
+	"os"
+	"time"
+
+	"kuntur/app/bio"
+	"kuntur/app/contact"
+	"kuntur/app/hero"
+	"kuntur/app/home"
+	"kuntur/app/registro"
+	"kuntur/app/web"
+)
+
+const (
+	defaultContactAPIURL = "http://127.0.0.1:8000/contacto"
+	contactHTTPTimeout   = 10 * time.Second
 )
 
 // NewRouter returns a fully configured http.Handler.
@@ -19,21 +31,22 @@ func NewRouter() http.Handler {
 
 	// Static files: http.FileServerFS serves from an fs.FS rooted at the
 	// directory passed in, so /static/css/style.css maps to static/css/style.css.
-	// http.FileServerFS takes an fs.FS directly. http.StripPrefix lets the
-	// prefix be removed before the file server looks up the path.
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServerFS(web.Static())))
 
 	views := web.Views()
+	client := &http.Client{Timeout: contactHTTPTimeout}
+	apiURL := os.Getenv("CONTACT_API_URL")
+	if apiURL == "" {
+		apiURL = defaultContactAPIURL
+	}
 
-	// "GET /{$}" matches exactly "/" and nothing else — prevents accidental
-	// shadowing of the static handler by paths like /foo.
-	mux.HandleFunc("GET /{$}", router.HomeHandler(views["index.html"]))
-	mux.HandleFunc("GET /presentaciones", router.HeroHandler(views["presentaciones.html"]))
-	mux.HandleFunc("GET /biografia", router.BioHandler(views["biografia.html"]))
-	mux.HandleFunc("GET /registro", router.RegistroHandler(views["registro.html"]))
-	mux.HandleFunc("GET /contacto", router.ContactHandler(views["contacto.html"]))
+	mux.HandleFunc("GET /{$}", home.Get(views["index.html"]))
+	mux.HandleFunc("GET /presentaciones", hero.Get(views["presentaciones.html"]))
+	mux.HandleFunc("GET /biografia", bio.Get(views["biografia.html"]))
+	mux.HandleFunc("GET /registro", registro.Get(views["registro.html"]))
+	mux.HandleFunc("GET /contacto", contact.Get(views["contacto.html"]))
+	mux.Handle("POST /contacto", contact.New(client, apiURL))
 
-	mux.HandleFunc("POST /contacto", router.SaveContacto())
 	return logMiddleware(mux)
 }
 
