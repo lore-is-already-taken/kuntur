@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class FormPayload(BaseModel):
@@ -12,3 +12,9 @@ class ContactResponse(BaseModel):
     name: str
     email: str
     message: str
+    attended: bool = Field(default=False)
+
+
+class ContactAttendUpdate(BaseModel):
+    attended: bool
+

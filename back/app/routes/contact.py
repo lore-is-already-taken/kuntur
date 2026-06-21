@@ -1,8 +1,9 @@
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
+from pymongo import ReturnDocument
 
 import app.db as db
-from app.types.contact import ContactResponse, FormPayload
+from app.types.contact import ContactAttendUpdate, ContactResponse, FormPayload
 
 contact_router = APIRouter()
 
@@ -36,6 +37,28 @@ async def get_contact(contact_id: str) -> ContactResponse:
     except Exception:
         raise HTTPException(status_code=400, detail="ID inválido")
     doc = await collection.find_one({"_id": oid})
+    if doc is None:
+        raise HTTPException(status_code=404, detail="Contacto no encontrado")
+    return ContactResponse(
+        id=str(doc["_id"]),
+        **{k: v for k, v in doc.items() if k != "_id"},
+    )
+
+
+@contact_router.patch("/{contact_id}", response_model=ContactResponse)
+async def update_attended(
+    contact_id: str, payload: ContactAttendUpdate
+) -> ContactResponse:
+    collection = db.get_collection("contact")
+    try:
+        oid = ObjectId(contact_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="ID inválido")
+    doc = await collection.find_one_and_update(
+        {"_id": oid},
+        {"$set": {"attended": payload.attended}},
+        return_document=ReturnDocument.AFTER,
+    )
     if doc is None:
         raise HTTPException(status_code=404, detail="Contacto no encontrado")
     return ContactResponse(
