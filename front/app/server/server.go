@@ -9,10 +9,10 @@ package server
 import (
 	"log/slog"
 	"net/http"
-	"os"
 	"time"
 
 	"kuntur/app/bio"
+	"kuntur/app/config"
 	"kuntur/app/contact"
 	"kuntur/app/hero"
 	"kuntur/app/home"
@@ -21,12 +21,11 @@ import (
 )
 
 const (
-	defaultContactAPIURL = "http://127.0.0.1:8000/contacto"
-	contactHTTPTimeout   = 10 * time.Second
+	contactHTTPTimeout = 10 * time.Second
 )
 
 // NewRouter returns a fully configured http.Handler.
-func NewRouter() http.Handler {
+func NewRouter(cfg config.Config) http.Handler {
 	mux := http.NewServeMux()
 
 	// Static files: http.FileServerFS serves from an fs.FS rooted at the
@@ -35,14 +34,11 @@ func NewRouter() http.Handler {
 
 	views := web.Views()
 	client := &http.Client{Timeout: contactHTTPTimeout}
-	apiURL := os.Getenv("CONTACT_API_URL")
-	if apiURL == "" {
-		apiURL = defaultContactAPIURL
-	}
+	apiURL := cfg.APIBaseURL + "/contacto"
 
 	mux.HandleFunc("GET /{$}", home.Get(views["index.html"]))
-	mux.HandleFunc("GET /presentaciones", hero.Get(views["presentaciones.html"]))
-	mux.HandleFunc("GET /biografia", bio.Get(views["biografia.html"]))
+	mux.HandleFunc("GET /presentaciones", hero.Get(views["presentaciones.html"], cfg.APIBaseURL))
+	mux.HandleFunc("GET /biografia", bio.Get(views["biografia.html"], cfg.APIBaseURL))
 	mux.HandleFunc("GET /registro", registro.Get(views["registro.html"]))
 	mux.HandleFunc("GET /contacto", contact.Get(views["contacto.html"]))
 	mux.Handle("POST /contacto", contact.New(client, apiURL))

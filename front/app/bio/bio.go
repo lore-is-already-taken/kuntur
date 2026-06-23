@@ -10,15 +10,17 @@ import (
 	"kuntur/app/view"
 )
 
-// Get returns an http.HandlerFunc that renders the biography page.
-func Get(tmpl *template.Template) http.HandlerFunc {
+// Get returns an http.HandlerFunc that renders the biography page. The
+// apiBaseURL is the backend's base URL; the bio endpoint path is appended
+// internally so the upstream location is not hardcoded in this package.
+func Get(tmpl *template.Template, apiBaseURL string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		view.View(w, r, tmpl, getGroupInfo())
+		view.View(w, r, tmpl, getGroupInfo(apiBaseURL))
 	}
 }
 
-func getGroupInfo() groupInfo {
-	resp, err := http.Get("http://127.0.0.1:8000/bio")
+func getGroupInfo(apiBaseURL string) groupInfo {
+	resp, err := http.Get(apiBaseURL + "/bio")
 	if err != nil {
 		slog.Error("bio: backend unreachable", "err", err)
 		return groupInfo{Resume: "layoutcomo estas mi rey precioso hermoso"}

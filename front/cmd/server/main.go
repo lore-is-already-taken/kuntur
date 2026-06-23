@@ -15,11 +15,11 @@ import (
 	"syscall"
 	"time"
 
+	"kuntur/app/config"
 	"kuntur/app/server"
 )
 
 const (
-	defaultAddr            = ":8080"
 	defaultShutdownTimeout = 10 * time.Second
 	readHeaderTimeout      = 5 * time.Second
 	readTimeout            = 10 * time.Second
@@ -31,9 +31,11 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
+	cfg := config.Load()
+
 	srv := &http.Server{
-		Addr:              envOr("ADDR", defaultAddr),
-		Handler:           server.NewRouter(),
+		Addr:              cfg.ServerAddr,
+		Handler:           server.NewRouter(cfg),
 		ReadHeaderTimeout: readHeaderTimeout,
 		ReadTimeout:       readTimeout,
 		WriteTimeout:      writeTimeout,
@@ -78,11 +80,4 @@ func run(srv *http.Server) error {
 	}
 	logger.Info("server stopped cleanly")
 	return nil
-}
-
-func envOr(key, def string) string {
-	if v, ok := os.LookupEnv(key); ok && v != "" {
-		return v
-	}
-	return def
 }
