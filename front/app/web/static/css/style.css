@@ -3,14 +3,14 @@
    bermellón #c8290f. Un solo acento; sin dorados inventados. */
 
 :root {
-  --bg: #140b08;
-  --surface: #1f120c;
-  --surface-2: #2a1810;
+  --bg: #2a1a12; /* marrón cálido, dos pasos sobre el negro del emblema */
+  --surface: #362419;
+  --surface-2: #443021;
   --fg: #f2e8d5; /* hueso del emblema */
-  --muted: #a8907c;
+  --muted: #bda28b;
   --accent: #c8290f; /* bermellón del emblema */
-  --accent-bright: #e04a26; /* bermellón iluminado (hover) */
-  --border: rgba(242, 232, 213, 0.12);
+  --accent-bright: #e85832; /* bermellón iluminado (hover) */
+  --border: rgba(242, 232, 213, 0.16);
 
   --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-sans:
@@ -59,7 +59,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(20, 11, 8, 0.92);
+  background: rgba(42, 26, 18, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
@@ -138,7 +138,7 @@ body {
   padding: 4rem 2rem 6rem;
   background: radial-gradient(
     ellipse 70% 55% at 50% 35%,
-    rgba(200, 41, 15, 0.14),
+    rgba(200, 41, 15, 0.18),
     transparent 70%
   );
 }
