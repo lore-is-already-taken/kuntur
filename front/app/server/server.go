@@ -43,7 +43,7 @@ func NewRouter(cfg config.Config) http.Handler {
 
 	// ----- post section
 
-	apiURL := cfg.APIBaseURL + "/contacto"
+	apiURL := cfg.APIBaseURL + "/contacto/"
 	mux.Handle("POST /contacto", contacto.New(client, apiURL))
 
 	return logMiddleware(mux)

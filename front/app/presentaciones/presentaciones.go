@@ -24,7 +24,7 @@ func Get(tmpl *template.Template, apiBaseURL string) http.HandlerFunc {
 // function logs via slog and returns an empty slice so the page still renders
 // without a hard failure.
 func getPresentations(apiBaseURL string) []presentation {
-	resp, err := http.Get(apiBaseURL + "/show")
+	resp, err := http.Get(apiBaseURL + "/presentaciones/")
 	if err != nil {
 		slog.Error("presentaciones: backend unreachable", "err", err)
 		return nil
