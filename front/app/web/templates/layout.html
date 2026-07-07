@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ block "title" . }}Kuntur{{ end }}</title>
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,7 +24,16 @@
 {{ end }} {{ define "nav" }}
 <header class="site-header">
   <nav class="site-nav">
-    <a class="site-nav__brand" href="/">Kuntur</a>
+    <a class="site-nav__brand" href="/">
+      <img
+        class="site-nav__logo"
+        src="/static/img/logo.png"
+        alt=""
+        width="34"
+        height="34"
+      />
+      Kuntur
+    </a>
     <div class="site-nav__links">
       <a class="site-nav__link" href="/">Inicio</a>
       <a class="site-nav__link" href="/presentaciones">Presentaciones</a>
