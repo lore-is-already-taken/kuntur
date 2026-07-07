@@ -137,6 +137,48 @@ async def put_integrante(member_id: str, payload: MemberCreate) -> MemberRespons
     return _to_response(result)
 
 
+@integrantes_router.delete(
+    "/{member_id}",
+    status_code=204,
+    dependencies=[Depends(require_admin)],
+    summary="Delete a member",
+    description=(
+        "Admin endpoint. Permanently removes the member identified by "
+        "``member_id`` from the ``integrantes`` collection. This cannot be "
+        "undone."
+    ),
+    response_description="No content — the member was deleted.",
+    responses={
+        **ADMIN_RESPONSES,
+        400: {"description": "ID inválido — ``member_id`` is not a valid ObjectId."},
+        404: {
+            "description": "Integrante no encontrado — no document matches the given id."
+        },
+    },
+)
+async def delete_integrante(member_id: str) -> None:
+    """Delete an existing member document.
+
+    Args:
+        member_id (str): The member's ``id`` as returned by ``GET /`` or
+            ``POST /``. Must be a valid MongoDB ``ObjectId`` string.
+
+    Raises:
+        HTTPException: ``400 ID inválido`` if ``member_id`` is not a valid
+            ``ObjectId`` string.
+        HTTPException: ``404 Integrante no encontrado`` if no document
+            matches the given ``member_id``.
+    """
+    collection = db.get_collection("integrantes")
+    try:
+        oid = ObjectId(member_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="ID inválido")
+    result = await collection.delete_one({"_id": oid})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Integrante no encontrado")
+
+
 def _to_response(doc: dict) -> MemberResponse:
     """Convert a raw MongoDB document into the public ``MemberResponse`` shape.
 
