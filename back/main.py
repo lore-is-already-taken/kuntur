@@ -5,10 +5,11 @@ and configures the public documentation surface (Swagger UI at ``/docs`` and
 ReDoc at ``/redoc``). The OpenAPI specification is exposed at
 ``/openapi.json``.
 
-The API is intentionally public and has no authentication. The contact form
-endpoint is open to anyone; the rest are admin-style reads/writes intended
-for the band to manage their own content.
+Content reads and the contact form submission are public. Admin-style writes
+and contact triage require a bearer token (see ``app.auth.require_admin``),
+validated against the ``ADMIN_TOKEN`` environment variable.
 """
+
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -16,10 +17,10 @@ from fastapi import FastAPI
 
 import app.db as db
 
-from app.routes.biography import bio_router
-from app.routes.contact import contact_router
-from app.routes.members import member_router
-from app.routes.show import show_router
+from app.routes.biografia import biografia_router
+from app.routes.contacto import contacto_router
+from app.routes.integrantes import integrantes_router
+from app.routes.presentaciones import presentaciones_router
 
 load_dotenv()
 
@@ -37,10 +38,10 @@ app = FastAPI(
         "Backend HTTP API for the [Kuntur](https://kunturkantu.cl) band "
         "website.\n\n"
         "## Resources\n\n"
-        "- **Shows** — upcoming and past live presentations.\n"
-        "- **Members** — the band's integrantes and their instruments.\n"
-        "- **Biography** — the band's bio (stub at the moment).\n"
-        "- **Contact** — public form submissions and admin triage.\n\n"
+        "- **Presentaciones** — upcoming and past live presentations.\n"
+        "- **Integrantes** — the band's members and their instruments.\n"
+        "- **Biografía** — the band's biography.\n"
+        "- **Contacto** — public form submissions and admin triage.\n\n"
         "## Interactive documentation\n\n"
         "- Swagger UI: [`/docs`](/docs)\n"
         "- ReDoc: [`/redoc`](/redoc)\n"
@@ -61,10 +62,12 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-app.include_router(contact_router, prefix="/contact", tags=["Contact"])
-app.include_router(member_router, prefix="/integrantes", tags=["Members"])
-app.include_router(bio_router, prefix="/bio", tags=["Biography"])
-app.include_router(show_router, prefix="/show", tags=["Shows"])
+app.include_router(contacto_router, prefix="/contacto", tags=["Contacto"])
+app.include_router(integrantes_router, prefix="/integrantes", tags=["Integrantes"])
+app.include_router(biografia_router, prefix="/biografia", tags=["Biografía"])
+app.include_router(
+    presentaciones_router, prefix="/presentaciones", tags=["Presentaciones"]
+)
 
 
 @app.get(

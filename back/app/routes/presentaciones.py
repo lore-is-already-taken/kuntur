@@ -7,15 +7,16 @@ object, which extends the public ``Show`` model with the document ``_id``.
 
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 import app.db as db
-from app.types.show import Show, ShowResponse
+from app.auth import ADMIN_RESPONSES, require_admin
+from app.types.presentaciones import Show, ShowResponse
 
-show_router = APIRouter()
+presentaciones_router = APIRouter()
 
 
-@show_router.get(
+@presentaciones_router.get(
     "/",
     summary="List all shows",
     description=(
@@ -38,18 +39,21 @@ async def get_show() -> List[ShowResponse]:
     return [_to_response(doc) for doc in docs]
 
 
-@show_router.post(
+@presentaciones_router.post(
     "/",
     status_code=201,
     response_model=ShowResponse,
+    dependencies=[Depends(require_admin)],
     summary="Create a show",
     description=(
-        "Persists a new show entry. The body is validated against the "
-        "``Show`` schema (``place`` + ``fecha``). The response includes the "
-        "server-assigned ``id`` so the show can be referenced later."
+        "Admin endpoint. Persists a new show entry. The body is validated "
+        "against the ``Show`` schema (``place`` + ``fecha``). The response "
+        "includes the server-assigned ``id`` so the show can be referenced "
+        "later."
     ),
     response_description="The created show, with its server-assigned id.",
     responses={
+        **ADMIN_RESPONSES,
         422: {
             "description": "Validation Error — payload did not match the Show schema."
         },

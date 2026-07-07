@@ -7,15 +7,16 @@ with the document ``_id``.
 """
 
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 import app.db as db
+from app.auth import ADMIN_RESPONSES, require_admin
 from app.types.integrantes import MemberCreate, MemberResponse
 
-member_router = APIRouter()
+integrantes_router = APIRouter()
 
 
-@member_router.get(
+@integrantes_router.get(
     "/",
     response_model=list[MemberResponse],
     summary="List all members",
@@ -35,18 +36,21 @@ async def get_integrantes() -> list[MemberResponse]:
     return [_to_response(doc) for doc in docs]
 
 
-@member_router.post(
+@integrantes_router.post(
     "/",
     response_model=MemberResponse,
     status_code=201,
+    dependencies=[Depends(require_admin)],
     summary="Create a member",
     description=(
-        "Persists a new band member. The body is validated against the "
-        "``MemberCreate`` schema (name, description, and at least one "
-        "instrument). The response includes the server-assigned ``id``."
+        "Admin endpoint. Persists a new band member. The body is validated "
+        "against the ``MemberCreate`` schema (name, description, and at "
+        "least one instrument). The response includes the server-assigned "
+        "``id``."
     ),
     response_description="The created member, with its server-assigned id.",
     responses={
+        **ADMIN_RESPONSES,
         422: {
             "description": "Validation Error — payload did not match the MemberCreate schema."
         },
@@ -74,19 +78,23 @@ async def post_integrantes(payload: MemberCreate) -> MemberResponse:
     return MemberResponse(id=str(result.inserted_id), **data)
 
 
-@member_router.put(
+@integrantes_router.put(
     "/{member_id}",
     response_model=MemberResponse,
+    dependencies=[Depends(require_admin)],
     summary="Replace a member",
     description=(
-        "**Full replacement**, not a partial update: every field of the stored "
-        "document is overwritten with the contents of the request body. The "
-        "internal ``_id`` is preserved."
+        "Admin endpoint. **Full replacement**, not a partial update: every "
+        "field of the stored document is overwritten with the contents of "
+        "the request body. The internal ``_id`` is preserved."
     ),
     response_description="The member after the replacement.",
     responses={
+        **ADMIN_RESPONSES,
         400: {"description": "ID inválido — ``member_id`` is not a valid ObjectId."},
-        404: {"description": "Integrante no encontrado — no document matches the given id."},
+        404: {
+            "description": "Integrante no encontrado — no document matches the given id."
+        },
         422: {
             "description": "Validation Error — payload did not match the MemberCreate schema."
         },

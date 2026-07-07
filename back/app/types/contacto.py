@@ -45,7 +45,7 @@ class ContactResponse(BaseModel):
     attended: bool = Field(
         default=False,
         description="Whether the band has triaged this submission. "
-        "Toggled via ``PATCH /contact/{contact_id}``.",
+        "Toggled via ``PATCH /contacto/{contact_id}``.",
     )
 
     model_config = ConfigDict(
@@ -62,7 +62,7 @@ class ContactResponse(BaseModel):
 
 
 class ContactAttendUpdate(BaseModel):
-    """Payload for ``PATCH /contact/{contact_id}`` — set the attended flag."""
+    """Payload for ``PATCH /contacto/{contact_id}`` — set the attended flag."""
 
     attended: bool = Field(
         ...,

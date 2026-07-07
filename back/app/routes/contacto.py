@@ -12,17 +12,19 @@ Admin surface (intended for the band to triage submissions):
     - ``GET  /{contact_id}`` — fetch a single submission.
     - ``PATCH /{contact_id}`` — toggle the ``attended`` flag.
 """
+
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pymongo import ReturnDocument
 
 import app.db as db
-from app.types.contact import ContactAttendUpdate, ContactResponse, FormPayload
+from app.auth import ADMIN_RESPONSES, require_admin
+from app.types.contacto import ContactAttendUpdate, ContactResponse, FormPayload
 
-contact_router = APIRouter()
+contacto_router = APIRouter()
 
 
-@contact_router.post(
+@contacto_router.post(
     "/",
     response_model=ContactResponse,
     status_code=201,
@@ -62,9 +64,10 @@ async def handle_form(payload: FormPayload) -> ContactResponse:
     return ContactResponse(id=str(result.inserted_id), **data)
 
 
-@contact_router.get(
+@contacto_router.get(
     "/",
     response_model=list[ContactResponse],
+    dependencies=[Depends(require_admin)],
     summary="List all contact submissions",
     description=(
         "Admin endpoint. Returns every submission stored in the ``contact`` "
@@ -72,6 +75,7 @@ async def handle_form(payload: FormPayload) -> ContactResponse:
         "triage incoming messages."
     ),
     response_description="All submissions in the collection, possibly empty.",
+    responses={**ADMIN_RESPONSES},
 )
 async def list_contacts() -> list[ContactResponse]:
     """List every contact submission stored in the database.
@@ -92,17 +96,21 @@ async def list_contacts() -> list[ContactResponse]:
     ]
 
 
-@contact_router.get(
+@contacto_router.get(
     "/{contact_id}",
     response_model=ContactResponse,
+    dependencies=[Depends(require_admin)],
     summary="Fetch a single contact submission",
     description=(
         "Admin endpoint. Returns the submission identified by ``contact_id``."
     ),
     response_description="The requested submission.",
     responses={
+        **ADMIN_RESPONSES,
         400: {"description": "ID inválido — ``contact_id`` is not a valid ObjectId."},
-        404: {"description": "Contacto no encontrado — no document matches the given id."},
+        404: {
+            "description": "Contacto no encontrado — no document matches the given id."
+        },
     },
 )
 async def get_contact(contact_id: str) -> ContactResponse:
@@ -135,9 +143,10 @@ async def get_contact(contact_id: str) -> ContactResponse:
     )
 
 
-@contact_router.patch(
+@contacto_router.patch(
     "/{contact_id}",
     response_model=ContactResponse,
+    dependencies=[Depends(require_admin)],
     summary="Set the attended flag on a submission",
     description=(
         "Admin endpoint. Sets the ``attended`` field to the value in the "
@@ -146,8 +155,11 @@ async def get_contact(contact_id: str) -> ContactResponse:
     ),
     response_description="The submission after the update, with the new ``attended`` value reflected.",
     responses={
+        **ADMIN_RESPONSES,
         400: {"description": "ID inválido — ``contact_id`` is not a valid ObjectId."},
-        404: {"description": "Contacto no encontrado — no document matches the given id."},
+        404: {
+            "description": "Contacto no encontrado — no document matches the given id."
+        },
         422: {
             "description": "Validation Error — payload did not match the ContactAttendUpdate schema."
         },
