@@ -1,5 +1,5 @@
-// Package hero renders the presentations page ("/presentaciones") of the Kuntur site.
-package hero
+// Package presentaciones renders the presentations page ("/presentaciones") of the Kuntur site.
+package presentaciones
 
 import (
 	"encoding/json"
@@ -26,20 +26,20 @@ func Get(tmpl *template.Template, apiBaseURL string) http.HandlerFunc {
 func getPresentations(apiBaseURL string) []presentation {
 	resp, err := http.Get(apiBaseURL + "/show")
 	if err != nil {
-		slog.Error("hero: backend unreachable", "err", err)
+		slog.Error("presentaciones: backend unreachable", "err", err)
 		return nil
 	}
 	defer resp.Body.Close()
-	slog.Info("hero: backend response", "status", resp.StatusCode)
+	slog.Info("presentaciones: backend response", "status", resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
-		slog.Error("hero: backend returned non-2xx", "status", resp.StatusCode)
+		slog.Error("presentaciones: backend returned non-2xx", "status", resp.StatusCode)
 		return nil
 	}
 
 	var raw []showResponse
 	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
-		slog.Error("hero: failed to decode response", "err", err)
+		slog.Error("presentaciones: failed to decode response", "err", err)
 		return nil
 	}
 

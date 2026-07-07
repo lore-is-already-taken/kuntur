@@ -11,11 +11,11 @@ import (
 	"net/http"
 	"time"
 
-	"kuntur/app/bio"
+	"kuntur/app/biografia"
 	"kuntur/app/config"
-	"kuntur/app/contact"
-	"kuntur/app/hero"
+	"kuntur/app/contacto"
 	"kuntur/app/home"
+	"kuntur/app/presentaciones"
 	"kuntur/app/registro"
 	"kuntur/app/web"
 )
@@ -34,14 +34,17 @@ func NewRouter(cfg config.Config) http.Handler {
 
 	views := web.Views()
 	client := &http.Client{Timeout: contactHTTPTimeout}
-	apiURL := cfg.APIBaseURL + "/contacto"
 
 	mux.HandleFunc("GET /{$}", home.Get(views["index.html"]))
-	mux.HandleFunc("GET /presentaciones", hero.Get(views["presentaciones.html"], cfg.APIBaseURL))
-	mux.HandleFunc("GET /biografia", bio.Get(views["biografia.html"], cfg.APIBaseURL))
+	mux.HandleFunc("GET /presentaciones", presentaciones.Get(views["presentaciones.html"], cfg.APIBaseURL))
+	mux.HandleFunc("GET /biografia", biografia.Get(views["biografia.html"], cfg.APIBaseURL))
 	mux.HandleFunc("GET /registro", registro.Get(views["registro.html"]))
-	mux.HandleFunc("GET /contacto", contact.Get(views["contacto.html"]))
-	mux.Handle("POST /contacto", contact.New(client, apiURL))
+	mux.HandleFunc("GET /contacto", contacto.Get(views["contacto.html"]))
+
+	// ----- post section
+
+	apiURL := cfg.APIBaseURL + "/contacto"
+	mux.Handle("POST /contacto", contacto.New(client, apiURL))
 
 	return logMiddleware(mux)
 }

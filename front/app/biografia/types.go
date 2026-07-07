@@ -1,4 +1,4 @@
-package bio
+package biografia
 
 // bioResponse mirrors the JSON contract from the /bio API endpoint.
 type bioResponse struct {

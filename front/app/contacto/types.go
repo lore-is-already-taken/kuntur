@@ -1,7 +1,7 @@
-// Package contact owns the contact form resource for the Kuntur site,
+// Package contacto owns the contact form resource for the Kuntur site,
 // including the GET view (rendering the form) and the POST handler
 // (submitting the form to the upstream API).
-package contact
+package contacto
 
 // Payload is the JSON body sent to the upstream contact API.
 type Payload struct {

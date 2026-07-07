@@ -2,20 +2,22 @@
 <section class="shows">
   <h1 class="shows__title">Presentaciones</h1>
   <ul class="show-list">
+    {{/* Recorremos la lista de shows */}} {{ range . }}
     <li class="show-card">
-      <time class="show-card__date">Jun 2026</time>
+      {{/* View Model pre-formateado por presentaciones.toPresentation (Date, Venue, CityLine) */}}
+      <time class="show-card__date">{{ .Date }}</time>
       <div>
-        <p class="show-card__venue">Espacio Cultural Centro</p>
-        <p class="show-card__city">Santiago, Chile</p>
+        <p class="show-card__venue">{{ .Venue }}</p>
+        <p class="show-card__city">{{ .CityLine }}</p>
       </div>
     </li>
+    {{ else }} {{/* Bloque opcional por si la lista viene vacía */}}
     <li class="show-card">
-      <time class="show-card__date">Ago 2026</time>
-      <div>
-        <p class="show-card__venue">Teatro Municipal</p>
-        <p class="show-card__city">Valparaíso, Chile</p>
-      </div>
+      <p class="show-card__venue">
+        No hay presentaciones programadas por ahora.
+      </p>
     </li>
+    {{ end }}
   </ul>
 </section>
 {{ end }} {{ template "layout" . }}

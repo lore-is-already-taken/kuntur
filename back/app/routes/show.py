@@ -50,7 +50,9 @@ async def get_show() -> List[ShowResponse]:
     ),
     response_description="The created show, with its server-assigned id.",
     responses={
-        422: {"description": "Validation Error — payload did not match the Show schema."},
+        422: {
+            "description": "Validation Error — payload did not match the Show schema."
+        },
     },
 )
 async def post_show(payload: Show) -> ShowResponse:
