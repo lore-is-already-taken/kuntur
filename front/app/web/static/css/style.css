@@ -1,16 +1,60 @@
 /* Kuntur — identidad andina derivada del emblema del cóndor.
    Paleta medida del logo: negro-granate #1c0a05, hueso #f2e8d5,
-   bermellón #c8290f. Un solo acento; sin dorados inventados. */
+   bermellón #c8290f. Un solo acento; sin dorados inventados.
+
+   Temas: cada token declara su par claro/oscuro una sola vez vía
+   light-dark(); el tema activo lo decide color-scheme (sistema por
+   defecto, u override del toggle que fija [data-theme] en <html>).
+   En claro, el acento "bright" (hover / acento legible) va MÁS
+   oscuro que el base — nunca más claro sobre fondo hueso. */
+
+/* Fuentes autohospedadas (subset latino, variables en peso):
+   servirlas desde /static evita exponer a los visitantes al
+   tracking de fonts.googleapis.com / fonts.gstatic.com. */
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url("/static/fonts/cormorant-garamond-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/cormorant-garamond-latin-italic.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/static/fonts/inter-latin.woff2") format("woff2");
+}
 
 :root {
-  --bg: #2a1a12; /* marrón cálido, dos pasos sobre el negro del emblema */
-  --surface: #362419;
-  --surface-2: #443021;
-  --fg: #f2e8d5; /* hueso del emblema */
-  --muted: #bda28b;
-  --accent: #c8290f; /* bermellón del emblema */
-  --accent-bright: #e85832; /* bermellón iluminado (hover) */
-  --border: rgba(242, 232, 213, 0.16);
+  color-scheme: light dark;
+
+  --bg: light-dark(#f2e8d5, #2a1a12);
+  --surface: light-dark(#f9f3e6, #362419);
+  --surface-2: light-dark(#e9dcc2, #443021);
+  --fg: light-dark(#241309, #f2e8d5);
+  --muted: light-dark(#6f5743, #bda28b);
+  --accent: light-dark(#b8250d, #c8290f);
+  --accent-bright: light-dark(#961e07, #e85832);
+  --on-accent: light-dark(#f9f3e6, #f2e8d5);
+  --border: light-dark(rgba(36, 19, 9, 0.18), rgba(242, 232, 213, 0.16));
+  --header-bg: light-dark(rgba(242, 232, 213, 0.92), rgba(42, 26, 18, 0.92));
+  --hero-glow: light-dark(rgba(184, 37, 13, 0.12), rgba(200, 41, 15, 0.18));
+  --emblem-shadow: light-dark(rgba(184, 37, 13, 0.22), rgba(200, 41, 15, 0.35));
+  --notice-bg: light-dark(rgba(36, 19, 9, 0.05), rgba(242, 232, 213, 0.07));
+  --notice-border: light-dark(rgba(36, 19, 9, 0.25), rgba(242, 232, 213, 0.3));
+  --placeholder: light-dark(rgba(111, 87, 67, 0.6), rgba(189, 162, 139, 0.6));
 
   --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-sans:
@@ -21,7 +65,13 @@
   /* Greca de triángulos: eco del anillo interior del emblema. */
   --motif: linear-gradient(135deg, var(--accent) 50%, transparent 50%),
     linear-gradient(45deg, transparent 50%, var(--accent) 50%);
+}
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
   color-scheme: dark;
 }
 
@@ -46,10 +96,92 @@ body {
   flex-direction: column;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 ::selection {
   background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─── Componentes compartidos ─────────────────────────────── */
+
+/* Título de sección con greca (el remate triangular del emblema). */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  margin: 0 0 2.5rem;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 4.5rem;
+  height: 0.5rem;
+  margin-top: 0.875rem;
+  background-image: var(--motif);
+  background-size: 1rem 0.5rem;
+  background-repeat: repeat-x;
+}
+
+.section-title--centered::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Antetítulo en mono: contexto breve sobre un título. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  margin: 0 0 1rem;
+}
+
+/* Acción principal: sirve para <a> y <button>. */
+.button {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  background: var(--accent);
+  border: none;
+  border-radius: 2px;
+  padding: 0.875rem 2.25rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.button:hover {
+  background: var(--accent-bright);
+  transform: translateY(-1px);
+}
+
+/* Link inline en color de acento, subrayado fino. */
+.text-link {
+  color: var(--accent-bright);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+
+.text-link:hover {
   color: var(--fg);
 }
 
@@ -59,7 +191,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(42, 26, 18, 0.92);
+  background: var(--header-bg);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
@@ -100,6 +232,7 @@ body {
 
 .site-nav__links {
   display: flex;
+  align-items: center;
   gap: 1.25rem 2rem;
   flex-wrap: wrap;
 }
@@ -116,6 +249,63 @@ body {
 
 .site-nav__link:hover {
   color: var(--accent-bright);
+}
+
+/* ─── Theme toggle ────────────────────────────────────────── */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--accent-bright);
+  border-color: var(--accent-bright);
+}
+
+.theme-toggle svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* El ícono muestra el destino del toggle: sol en oscuro, luna en
+   claro. display no acepta light-dark(), así que los dos contextos
+   "claro activo" (sistema y override) fijan el mismo par de vars. */
+.theme-toggle__sun {
+  display: var(--display-sun, block);
+}
+
+.theme-toggle__moon {
+  display: var(--display-moon, none);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --display-sun: none;
+    --display-moon: block;
+  }
+}
+
+:root[data-theme="light"] {
+  --display-sun: none;
+  --display-moon: block;
+}
+
+:root[data-theme="dark"] {
+  --display-sun: block;
+  --display-moon: none;
 }
 
 /* ─── Page layout ─────────────────────────────────────────── */
@@ -138,7 +328,7 @@ body {
   padding: 4rem 2rem 6rem;
   background: radial-gradient(
     ellipse 70% 55% at 50% 35%,
-    rgba(200, 41, 15, 0.18),
+    var(--hero-glow),
     transparent 70%
   );
 }
@@ -147,16 +337,7 @@ body {
   width: clamp(180px, 30vw, 300px);
   height: auto;
   margin-bottom: 2rem;
-  filter: drop-shadow(0 12px 48px rgba(200, 41, 15, 0.35));
-}
-
-.hero__eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--accent-bright);
-  margin: 0 0 1rem;
+  filter: drop-shadow(0 12px 48px var(--emblem-shadow));
 }
 
 .hero__title {
@@ -176,59 +357,6 @@ body {
   font-size: clamp(1.25rem, 3vw, 1.625rem);
   color: var(--muted);
   margin: 1rem 0 2.75rem;
-}
-
-.hero__cta {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--fg);
-  background: var(--accent);
-  text-decoration: none;
-  padding: 0.875rem 2.25rem;
-  border-radius: 2px;
-  transition:
-    background 0.15s ease,
-    transform 0.15s ease;
-}
-
-.hero__cta:hover {
-  background: var(--accent-bright);
-  transform: translateY(-1px);
-}
-
-/* ─── Títulos de sección con greca ────────────────────────── */
-
-.shows__title,
-.contact__title,
-.bio__title,
-.registro__title {
-  font-family: var(--font-display);
-  font-size: clamp(2.25rem, 5vw, 3rem);
-  letter-spacing: 0.01em;
-  font-weight: 600;
-  margin: 0 0 2.5rem;
-}
-
-.shows__title::after,
-.contact__title::after,
-.bio__title::after,
-.registro__title::after {
-  content: "";
-  display: block;
-  width: 4.5rem;
-  height: 0.5rem;
-  margin-top: 0.875rem;
-  background-image: var(--motif);
-  background-size: 1rem 0.5rem;
-  background-repeat: repeat-x;
-}
-
-.registro__title::after {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* ─── Shows page ──────────────────────────────────────────── */
@@ -381,31 +509,11 @@ body {
   text-align: center;
 }
 
-.registro__eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--accent-bright);
-  margin: 0 0 1rem;
-}
-
 .registro__text {
   color: var(--muted);
   font-size: 1.0625rem;
   line-height: 1.7;
   margin: 0 0 1rem;
-}
-
-.registro__link {
-  color: var(--accent-bright);
-  text-decoration: none;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 1px;
-}
-
-.registro__link:hover {
-  color: var(--fg);
 }
 
 /* ─── Contact page ────────────────────────────────────────── */
@@ -426,20 +534,9 @@ body {
   margin: 0 0 3rem;
 }
 
-.contact__email {
-  color: var(--accent-bright);
-  text-decoration: none;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 1px;
-}
-
-.contact__email:hover {
-  color: var(--fg);
-}
-
 .contact__success {
-  background: rgba(242, 232, 213, 0.07);
-  border: 1px solid rgba(242, 232, 213, 0.3);
+  background: var(--notice-bg);
+  border: 1px solid var(--notice-border);
   border-left: 3px solid var(--accent);
   border-radius: 4px;
   color: var(--fg);
@@ -488,7 +585,7 @@ body {
 
 .contact-form__input::placeholder,
 .contact-form__textarea::placeholder {
-  color: rgba(168, 144, 124, 0.6);
+  color: var(--placeholder);
 }
 
 .contact-form__textarea {
@@ -499,21 +596,6 @@ body {
 
 .contact-form__submit {
   align-self: flex-start;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--fg);
-  background: var(--accent);
-  border: none;
-  border-radius: 2px;
-  padding: 0.875rem 2.25rem;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.contact-form__submit:hover {
-  background: var(--accent-bright);
 }
 
 /* ─── Footer ──────────────────────────────────────────────── */

@@ -6,19 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ block "title" . }}Kuntur{{ end }}</title>
     <link rel="icon" type="image/png" href="/static/img/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/static/fonts/inter-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/cormorant-garamond-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
     <link rel="stylesheet" href="/static/css/style.css" />
+    <script>
+      /* Aplica el tema guardado antes del primer paint (evita flash). */
+      (function () {
+        var theme = localStorage.getItem("kuntur-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.dataset.theme = theme;
+        }
+      })();
+    </script>
     {{ block "head" . }}{{ end }}
   </head>
   <body>
     {{ template "nav" . }}
     <main class="page-main">{{ block "content" . }}{{ end }}</main>
     {{ template "footer" . }}
+    <script>
+      (function () {
+        var button = document.querySelector("[data-theme-toggle]");
+        if (!button) return;
+        button.addEventListener("click", function () {
+          var root = document.documentElement;
+          var current =
+            root.dataset.theme ||
+            (matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark");
+          var next = current === "dark" ? "light" : "dark";
+          root.dataset.theme = next;
+          localStorage.setItem("kuntur-theme", next);
+        });
+      })();
+    </script>
   </body>
 </html>
 {{ end }} {{ define "nav" }}
@@ -40,6 +74,39 @@
       <a class="site-nav__link" href="/biografia">Biografía</a>
       <a class="site-nav__link" href="/registro">Registro</a>
       <a class="site-nav__link" href="/contacto">Contacto</a>
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Cambiar entre tema claro y oscuro"
+      >
+        <svg
+          class="theme-toggle__sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path
+            d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+          />
+        </svg>
+        <svg
+          class="theme-toggle__moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+        </svg>
+      </button>
     </div>
   </nav>
 </header>
