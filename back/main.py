@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 import app.db as db
-
 from app.routes.biografia import biografia_router
 from app.routes.contacto import contacto_router
 from app.routes.integrantes import integrantes_router
