@@ -1,0 +1,52 @@
+services:
+  mongo:
+    build: ./database
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  back:
+    build: ./back
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      DB_HOST: mongo
+      DB_USER: ${MONGO_APP_USER}
+      DB_PASSWORD: ${MONGO_APP_PASSWORD}
+      DB_NAME: ${MONGO_INITDB_DATABASE}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+
+  front:
+    build: ./front
+    restart: unless-stopped
+    depends_on:
+      - back
+    environment:
+      API_BASE_URL: http://back:8000
+    # Published only on loopback so it can be smoke-tested from the host
+    # without opening it to the outside world; cloudflared reaches it via
+    # the internal compose network regardless of this mapping. Host port
+    # 18080 because 8080 is taken by traefik on this machine.
+    ports:
+      - "127.0.0.1:18080:8080"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - front
+
+volumes:
+  mongo_data:

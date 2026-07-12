@@ -1,0 +1,5 @@
+tmp/
+build-errors.log
+*.exe
+*.test
+.git
