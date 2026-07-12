@@ -461,6 +461,29 @@ body {
   background-repeat: repeat-x;
 }
 
+.bio__photo {
+  margin: 3rem 0 0;
+  width: 100%;
+}
+
+.bio__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+
+.bio__photo-caption {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
 .members {
   max-width: 60rem;
   margin: 0 auto;
@@ -508,6 +531,35 @@ body {
   text-align: center;
   color: var(--muted);
   border-top-color: var(--border);
+}
+
+.member-card__photo {
+  display: block;
+  width: 100%;
+  /* height:auto pisa el presentational hint del atributo height="";
+     sin esto el aspect-ratio se ignora y la caja queda de 400px. */
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+/* Sin foto: monograma sobre superficie hundida, con un guiño de la
+   greca en la base para que el vacío siga siendo Kuntur. */
+.member-card__photo--placeholder {
+  display: grid;
+  place-items: center;
+  background-color: var(--surface-2);
+  background-image: var(--motif);
+  background-size: 1rem 0.5rem;
+  background-repeat: repeat-x;
+  background-position: 50% calc(100% - 1rem);
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .member-card__name {

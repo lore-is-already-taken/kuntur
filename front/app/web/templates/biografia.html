@@ -7,6 +7,13 @@
     <p>{{ . }}</p>
     {{ end }}
   </div>
+  <!-- Descomentar cuando exista la foto grupal en
+       front/app/web/static/img/biografia/kuntur-kantu.webp
+  <figure class="bio__photo">
+    <img src="/static/img/biografia/kuntur-kantu.webp" alt="Kuntur Kantu en vivo" loading="lazy" width="1400" height="900" />
+    <figcaption class="bio__photo-caption">Kuntur Kantu</figcaption>
+  </figure>
+  -->
 </section>
 
 <section class="members">
@@ -14,6 +21,13 @@
   <ul class="members__grid">
     {{ range .Members }}
     <li class="member-card">
+      {{ if .Photo }}
+      <img class="member-card__photo" src="{{ .Photo }}" alt="" loading="lazy" width="400" height="400" />
+      {{ else }}
+      <div class="member-card__photo member-card__photo--placeholder" aria-hidden="true">
+        {{ .Initials }}
+      </div>
+      {{ end }}
       <h3 class="member-card__name">{{ .Name }}</h3>
       <p class="member-card__instruments">{{ .Instruments }}</p>
       <p class="member-card__description">{{ .Description }}</p>

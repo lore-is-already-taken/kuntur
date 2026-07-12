@@ -1,6 +1,10 @@
 package biografia
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+	"unicode/utf8"
+)
 
 // bioResponse mirrors the JSON contract from the /biografia API endpoint.
 type bioResponse struct {
@@ -14,6 +18,7 @@ type memberResponse struct {
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
 	Instrument  []memberInstrument `json:"instrument"`
+	Photo       string             `json:"photo"`
 }
 
 type memberInstrument struct {
@@ -28,11 +33,14 @@ type groupInfo struct {
 }
 
 // member is the per-integrante view model. Instruments is intentionally
-// pre-formatted (e.g. "charango · quena") so the template stays free of logic.
+// pre-formatted (e.g. "charango · quena") so the template stays free of
+// logic. Initials feeds the photo placeholder when Photo is empty.
 type member struct {
 	Name        string
 	Description string
 	Instruments string
+	Photo       string
+	Initials    string
 }
 
 func toGroupInfo(r bioResponse) groupInfo {
@@ -63,5 +71,25 @@ func toMember(r memberResponse) member {
 		Name:        r.Name,
 		Description: r.Description,
 		Instruments: strings.Join(names, " · "),
+		// Trimmed so a whitespace-only value falls through to the
+		// initials placeholder instead of rendering a broken <img>.
+		Photo:    strings.TrimSpace(r.Photo),
+		Initials: toInitials(r.Name),
 	}
+}
+
+// toInitials builds the placeholder monogram from the first letter of the
+// first two words of the name ("Lorenzo Saavedra" → "LS"). Single-word
+// names yield a single letter; an empty name yields an empty string.
+func toInitials(name string) string {
+	words := strings.Fields(name)
+	if len(words) > 2 {
+		words = words[:2]
+	}
+	var b strings.Builder
+	for _, w := range words {
+		r, _ := utf8.DecodeRuneInString(w)
+		b.WriteRune(unicode.ToUpper(r))
+	}
+	return b.String()
 }
