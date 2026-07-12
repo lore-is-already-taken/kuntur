@@ -1,15 +1,14 @@
 {{ define "title" }}{{ .Title }}{{ end }} {{ define "head" }}
-<meta name="description" content="{{ .Group }} — {{ .Tagline }}" />
+<meta name="description" content="{{ .Description }}" />
 {{ end }} {{ define "content" }}
 <section class="hero">
   <img
     class="hero__emblem"
     src="/static/img/logo.png"
-    alt="Emblema de Kuntur: cóndor andino en estilo geométrico"
+    alt="Emblema de Kuntur Kantu: cóndor andino en estilo geométrico"
   />
-  <p class="eyebrow">Música andina · Norte de Chile</p>
+  <p class="eyebrow">Música andina</p>
   <h1 class="hero__title">{{ .Group }}</h1>
-  <p class="hero__tagline">{{ .Tagline }}</p>
   <a class="button" href="/presentaciones">Ver presentaciones</a>
 </section>
 {{ end }} {{ template "layout" . }}
