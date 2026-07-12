@@ -39,6 +39,17 @@ class MemberCreate(BaseModel):
         ...,
         description="Instruments the member plays (at least one).",
     )
+    photo: str | None = Field(
+        None,
+        description=(
+            "Public path of the member's portrait, served by the frontend "
+            "(e.g. ``/static/img/integrantes/camila-quispe.webp``). ``None`` "
+            "when no photo is available. The file must already exist among "
+            "the frontend's embedded static assets — they ship at build "
+            "time, so a new image requires a frontend rebuild."
+        ),
+        examples=["/static/img/integrantes/camila-quispe.webp"],
+    )
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -49,6 +60,7 @@ class MemberCreate(BaseModel):
                     {"type": "voice", "name": "lead vocals"},
                     {"type": "string", "name": "charango"},
                 ],
+                "photo": "/static/img/integrantes/camila-quispe.webp",
             }
         }
     )

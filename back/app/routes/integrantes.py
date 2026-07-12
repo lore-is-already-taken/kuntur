@@ -44,9 +44,9 @@ async def get_integrantes() -> list[MemberResponse]:
     summary="Create a member",
     description=(
         "Admin endpoint. Persists a new band member. The body is validated "
-        "against the ``MemberCreate`` schema (name, description, and at "
-        "least one instrument). The response includes the server-assigned "
-        "``id``."
+        "against the ``MemberCreate`` schema (name, description, at least "
+        "one instrument, and an optional photo path). The response includes "
+        "the server-assigned ``id``."
     ),
     response_description="The created member, with its server-assigned id.",
     responses={
