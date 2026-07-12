@@ -23,8 +23,8 @@ type memberInstrument struct {
 
 // groupInfo is the view model passed to the template.
 type groupInfo struct {
-	Resume  string
-	Members []member
+	Paragraphs []string
+	Members    []member
 }
 
 // member is the per-integrante view model. Instruments is intentionally
@@ -36,10 +36,22 @@ type member struct {
 }
 
 func toGroupInfo(r bioResponse) groupInfo {
-	//nolint:gosimple //intentional: adapter decouples API contract from view model
 	return groupInfo{
-		Resume: r.Resume,
+		Paragraphs: toParagraphs(r.Resume),
 	}
+}
+
+// toParagraphs splits the plain-text resume on line breaks so the template
+// can wrap each paragraph in its own element instead of relying on
+// white-space tricks over a single block.
+func toParagraphs(resume string) []string {
+	var out []string
+	for _, p := range strings.Split(resume, "\n") {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
 }
 
 func toMember(r memberResponse) member {

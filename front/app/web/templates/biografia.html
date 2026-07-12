@@ -1,7 +1,12 @@
 {{ define "title" }}Biografía — Kuntur{{ end }} {{ define "content" }}
 <section class="bio">
+  <p class="eyebrow">Santiago de Chile · Desde 2015</p>
   <h1 class="section-title">Biografía</h1>
-  <p class="bio__resume">{{ .Resume }}</p>
+  <div class="bio__resume">
+    {{ range .Paragraphs }}
+    <p>{{ . }}</p>
+    {{ end }}
+  </div>
 </section>
 
 <section class="members">

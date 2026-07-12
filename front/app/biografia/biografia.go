@@ -30,20 +30,20 @@ func getGroupInfo(apiBaseURL string) groupInfo {
 	resp, err := http.Get(apiBaseURL + "/biografia/")
 	if err != nil {
 		slog.Error("biografia: backend unreachable", "err", err)
-		return groupInfo{Resume: fallbackResume}
+		return groupInfo{Paragraphs: []string{fallbackResume}}
 	}
 	defer resp.Body.Close()
 	slog.Info("biografia: backend response", "status", resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
 		slog.Error("biografia: backend returned non-2xx", "status", resp.StatusCode)
-		return groupInfo{Resume: fallbackResume}
+		return groupInfo{Paragraphs: []string{fallbackResume}}
 	}
 
 	var raw bioResponse
 	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
 		slog.Error("biografia: failed to decode response", "err", err)
-		return groupInfo{Resume: fallbackResume}
+		return groupInfo{Paragraphs: []string{fallbackResume}}
 	}
 
 	return toGroupInfo(raw)
